@@ -4,7 +4,11 @@
 IWCPP::IWCPP(string filepath){
     if(!filesystem::exists(filepath)){
         cout << RED << "Error: " << RESET << "File does not exist" << endl;
-        exit(1);
+        exit(0);
+    }
+    if(filepath.substr(filepath.length() - 4, 4) != ".iwc"){
+        cout << RED << "Error: " << RESET << "File \"" << filepath << "\" is not a valid file" << endl;
+        exit(0);
     }
     file = filepath;
 }
