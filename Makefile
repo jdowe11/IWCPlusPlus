@@ -7,11 +7,11 @@ all: build
 build: 
 	$(CXX) $(CXXFLAGS) src/*.cpp -o iwcpp
 
-debug:
+debug: clean
 	$(CXX) $(DEBUG) $(CXXFLAGS) src/*.cpp -o test.out
 	lldb ./test.out test.iwc
 	@rm -rf *.out
-	@rm -rf *.dSYM
+	@rm -rf test.out.dSYM
 
 clean:
 	@rm -rf *.out
