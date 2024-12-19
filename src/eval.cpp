@@ -21,7 +21,7 @@ double IWCPP::evalNums(stack<string> statement){
         string token = statement.top();
         statement.pop();
 
-        if(isNum(token)) /// checks if a num
+        if(isNum(token)) /// checks if a num exists
             nums.push(stod(token));
         else{ /// must be an op, then will evaluate
             while (!ops.empty() && precedence(ops.top()) >= precedence(token)) {
