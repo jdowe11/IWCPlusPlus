@@ -58,6 +58,10 @@ bool IWCPP::isNum(std::string str){
     }
 }
 
+bool IWCPP::isOp(std::string str){
+    return str == "+" || str == "-" || str == "*" || str == "/";
+}
+
 int IWCPP::precedence(string op) {
     if (op == "+" || op == "-") return 1;
     if (op == "*" || op == "/") return 2;

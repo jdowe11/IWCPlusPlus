@@ -19,8 +19,6 @@ void IWCPP::run(){
     vector <string> parsed;
     parse(filestream, parsed);
     filestream.close();
-
-    cout << eval(parsed);
 }
 
 int main(int argc, char* argv[]){
