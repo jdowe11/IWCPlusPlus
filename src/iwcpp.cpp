@@ -2,26 +2,24 @@
 
 /// functions
 IWCPP::IWCPP(string filepath){
-    if(!filesystem::exists(filepath)){
+    if(!filesystem::exists(filepath)){ /// checks for file existence
         cout << RED << "Error: " << RESET << "File does not exist" << endl;
         exit(0);
     }
-    if(filepath.substr(filepath.length() - 4, 4) != ".iwc"){
+    if(filepath.substr(filepath.length() - 4, 4) != ".iwc"){ /// ensures the file extension is valid
         cout << RED << "Error: " << RESET << "File \"" << filepath << "\" is not a valid file" << endl;
         exit(0);
     }
-    file = filepath;
+    file = filepath; /// sets the filepath
 }
 
 void IWCPP::run(){
     ifstream filestream;
-    
-    vector <string> parsed;
-    parse(filestream, parsed);
+    parse(filestream); /// adds filestream to parser
     filestream.close();
 }
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[]){ /// main program, will run the code
     if(argc < 2){
         cout << RED << "Error: " << RESET << "No input files" << endl;
         exit(0);
