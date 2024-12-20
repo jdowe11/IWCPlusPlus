@@ -27,7 +27,6 @@ void IWCPP::parseExp(string &exp){
         if(it == env.end()){ /// checks for new declared variables
             string tmpLine;
             getline(stream, tmpLine);
-            stringstream line(tmpLine);
 
             bigStep(tmpLine, mem);
 
@@ -36,7 +35,6 @@ void IWCPP::parseExp(string &exp){
         else if(tmp == "="){ /// sets old variables to new value
             string tmpLine;
             getline(stream, tmpLine);
-            stringstream line(tmpLine);
 
             bigStep(tmpLine, mem);
 
@@ -74,37 +72,33 @@ void IWCPP::tell(string str){
     size_t index;
 
     index = str.find(">");
-    if(index != string::npos){
+    if(index != string::npos){ /// checks if output files are given, terminal is default
         ending = str.substr(index + 1);
         stringstream sstr(ending);
 
         sstr >> ending;
-        if(ending == "terminal")
+        if(ending == "terminal") /// can add terminal, but is not required
             index = string::npos;
         else
             outs.open(ending);
     }
 
     innards = str.substr(str.find('(') + 1, str.find(')') - str.find('(') - 1); /// removes the clutter to find just the string inside
-    if(innards[0] != '\"' && index == string::npos){ /// if it is not a string, must parse it
+    if(index == string::npos){ /// will output to terminal if not provided an output
         parseExp(innards);
         cout << innards << '\n';
     }
-    else if(innards[0] != '\"' && index != string::npos){
+    else{ /// otherwise will output to the given output
         parseExp(innards);
         outs << innards << '\n';
+        outs.close();
     }
-    else if(index != string::npos){
-        outs << innards.substr(1, innards.length() - 2) << '\n'; 
-    }
-    else /// if it is a string to be told, then just output it without quotations
-        cout << innards.substr(1, innards.length() - 2) << '\n'; 
 }
 
-bool IWCPP::isVar(string str){
-    return !isInt(str) && !isFlt(str) && !isOp(str) && !str.empty() && str.find('(') == string::npos && str.find(')') == string::npos;
+bool IWCPP::isVar(string str) const{
+    return !isStr(str) && !isInt(str) && !isFlt(str) && !isOp(str) && !str.empty() && str.find('(') == string::npos;
 }
 
-bool IWCPP::isFunction(string str){
+bool IWCPP::isFunction(string str) const{
     return true; // TODO
 }

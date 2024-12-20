@@ -2,25 +2,30 @@
 
 /// primary evaluate functions
 string IWCPP::eval(vector<string> parsed){
-    /// creates the parsed statement into a usable stack
+    /// variables
     stack<string> stack;
     bool typeChecker = true;
 
+    if(parsed.size() == 0) /// error checking
+        cout << RED << "Error: " << RESET << "No data given to a variable" << endl;
+
+    if(isStr(parsed.at(0))) /// checks if a string, returns if so
+        return evalStr(parsed);
+
+    /// creates the parsed statement into a usable stack
     for(int i = parsed.size() - 1; i >= 0; i--){
-        if(isFlt(parsed.at(i)))
+        if(isFlt(parsed.at(i))) /// checks if the stack has any floats
             typeChecker = false;
         stack.push(parsed.at(i));
     }
 
     if(typeChecker)
         return to_string(evalInt(stack));
-    else if(!typeChecker)
-        return to_string(evalFloat(stack));
     else
-        return "GUH";
+        return to_string(evalFloat(stack));
 }
 
-int IWCPP::evalInt(stack<string> statement){
+int IWCPP::evalInt(stack<string> statement) const{
     /// variables for evaluation
     stack <string> ops;
     stack <int> nums;
@@ -53,7 +58,7 @@ int IWCPP::evalInt(stack<string> statement){
 }
 
 /// type specific evaluate functions
-float IWCPP::evalFloat(stack<string> statement){
+float IWCPP::evalFloat(stack<string> statement) const{
     /// variables for evaluation
     stack <string> ops;
     stack <float> nums;
@@ -86,7 +91,7 @@ float IWCPP::evalFloat(stack<string> statement){
 }
 
 /// HELPER FUNCTIONS
-bool IWCPP::isInt(std::string str){
+bool IWCPP::isInt(std::string str) const{
     try{
         stoi(str);
         if(str.find(".") == string::npos)
@@ -102,7 +107,7 @@ bool IWCPP::isInt(std::string str){
     }
 }
 
-bool IWCPP::isFlt(std::string str){
+bool IWCPP::isFlt(std::string str) const{
     try{
         stod(str);
         if(str.find('.') != string::npos)
@@ -118,7 +123,7 @@ bool IWCPP::isFlt(std::string str){
     }
 }
 
-bool IWCPP::isNum(std::string str){
+bool IWCPP::isNum(std::string str) const{
     try{
         stod(str);
         return true;
@@ -131,18 +136,54 @@ bool IWCPP::isNum(std::string str){
     }
 }
 
-bool IWCPP::isOp(std::string str){
-    return str == "+" || str == "-" || str == "*" || str == "/";
+string IWCPP::evalStr(vector<std::string> strs) const{
+    string whole;
+
+    for(size_t i = 0; i < strs.size(); i++){ /// allowing for string concatenation
+        if(strs[i][0] == '"' && strs[i][strs[i].length() - 1] == '"'){
+            whole += strs[i].substr(1, strs[i].length() - 2); /// normal string, remove quotes
+        }
+        else if(strs[i] == "+" && i + 1 < strs.size()){ /// operation for string concatenation with no autoformating
+            i++; // Move to the next string
+            whole += strs[i].substr(1, strs[i].length() - 2);
+        }
+        else if(strs[i] == "+." && i + 1 < strs.size()){ /// dot after concat indicates a space
+            i++;
+            whole += " " + strs[i].substr(1, strs[i].length() - 2);
+        }
+        else if(strs[i] == "++" && i + 1 < strs.size()){  /// double plus indicates newline
+            i++;
+            whole += "\n" + strs[i].substr(1, strs[i].length() - 2);
+        }
+        else if(strs[i] == "+-" && i + 1 < strs.size()){ /// dash indicates tab
+            i++;
+            whole += "\t" + strs[i].substr(1, strs[i].length() - 2);
+        }
+        else{ /// error checking!
+            cout << RED << "Error: " << RESET << "Invalid string operation or malformed input: " << strs[i] << endl; 
+            exit(0);
+        }
+    }
+
+    return (whole); /// removes quotes
 }
 
-int IWCPP::precedence(string op) {
+bool IWCPP::isStr(std::string str) const{
+    return str.find("\"") != string::npos;
+}
+
+bool IWCPP::isOp(std::string str) const{
+    return str == "+" || str == "-" || str == "*" || str == "/" || str == "+." || str == "+-" || str == "++";
+}
+
+int IWCPP::precedence(string op) const{
     if (op == "+" || op == "-") return 1;
     if (op == "*" || op == "/") return 2;
     return 0; // Invalid operator
 }
 
 template<typename T>
-T IWCPP::operate(string op, T num1, T num2){
+T IWCPP::operate(string op, T num1, T num2) const{
     if(op == "+")
         return num1 + num2;
     else if(op == "-")

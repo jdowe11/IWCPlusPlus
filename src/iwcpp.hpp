@@ -53,12 +53,12 @@ class IWCPP{
          *  @param str - the string to be checked
          *  @return - boolean depending on string
          */
-        bool isVar(string str);
+        bool isVar(string str) const;
         /** isFunction - checks if a string is a valid function
          *  @param str - the string to be checked
          *  @return - boolean depending on string
          */
-        bool isFunction(string str);
+        bool isFunction(string str) const;
 
         /// evaluate functions & helper functions
 
@@ -71,44 +71,54 @@ class IWCPP{
          *  @param statement - the stack of numbers and operations
          *  @return - the value
          */
-        int evalInt(stack<string> statement);
+        int evalInt(stack<string> statement) const;
         /** isInt - checks if a string is an integer
          *  @param str - the string to be checked
          *  @return - boolean depending on string
          */
-        bool isInt(std::string str);
+        bool isInt(std::string str) const;
         /** evalFloat - evaluates a set of floating points numbers in an expression
          *  @param statement - the stack of numbers and operations
          *  @return - the value
          */
-        float evalFloat(stack<string> statement);
+        float evalFloat(stack<string> statement) const;
         /** isFlt - checks if a string is a floating point number
          *  @param str - the string to be checked
          *  @return - boolean depending on string
          */
-        bool isFlt(std::string str);
+        bool isFlt(std::string str) const;
+        /** evalFloat - evaluates a set of strings in an expression and allow concatenation
+         *  @param statement - the vector of strings
+         *  @return - the value
+         */
+        string evalStr(vector<std::string> strs) const;
+        /** isStr - checks if a string passed is a string
+         *  @param str - the string to be checked
+         *  @return - boolean depending on string
+         */
+        bool isStr(std::string str) const;
         /** isNum - checks if a string is a a number
          *  @param str - the string to be checked
          *  @return - boolean depending on string
          */
-        bool isNum(std::string str);
+        bool isNum(std::string str) const;
         /** isOp - checks if a string is an operator
          *  @param str - the string to be checked
          *  @return - boolean depending on string
          */
-        bool isOp(std::string str);
+        bool isOp(std::string str) const;
         /** operate - performs a given operation on two numbers
          *  @param op - the operation to be done
          *  @param num1 - the first number
          *  @param num2 - the second number
          */
         template<typename T>
-        T operate(string op, T num1, T num2);
+        T operate(string op, T num1, T num2) const;
         /** precedence - function to check operator precedence in an equation (CURRENTLY FOLLOW MDAS, no PE)
          *  @param op - the operator
          *  @return - precedence of operator, higher or lowering depending
          */
-        int precedence(string op);
+        int precedence(string op) const;
 
         /// variables
         string file;
