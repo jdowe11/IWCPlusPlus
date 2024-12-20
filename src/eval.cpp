@@ -90,52 +90,6 @@ float IWCPP::evalFloat(stack<string> statement) const{
     return nums.top();
 }
 
-/// HELPER FUNCTIONS
-bool IWCPP::isInt(std::string str) const{
-    try{
-        stoi(str);
-        if(str.find(".") == string::npos)
-            return true;
-        else
-            return false;
-    } catch (const std::invalid_argument& e) {
-        // If the string is not a valid number, catch the exception
-        return false;
-    } catch (const std::out_of_range& e) {
-        // If the number is too large or too small, catch the exception
-        return false;
-    }
-}
-
-bool IWCPP::isFlt(std::string str) const{
-    try{
-        stod(str);
-        if(str.find('.') != string::npos)
-            return true;
-        else
-            return false;
-    } catch (const std::invalid_argument& e) {
-        // If the string is not a valid number, catch the exception
-        return false;
-    } catch (const std::out_of_range& e) {
-        // If the number is too large or too small, catch the exception
-        return false;
-    }
-}
-
-bool IWCPP::isNum(std::string str) const{
-    try{
-        stod(str);
-        return true;
-    } catch (const std::invalid_argument& e) {
-        // If the string is not a valid number, catch the exception
-        return false;
-    } catch (const std::out_of_range& e) {
-        // If the number is too large or too small, catch the exception
-        return false;
-    }
-}
-
 string IWCPP::evalStr(vector<std::string> strs) const{
     string whole;
 
@@ -166,20 +120,6 @@ string IWCPP::evalStr(vector<std::string> strs) const{
     }
 
     return (whole); /// removes quotes
-}
-
-bool IWCPP::isStr(std::string str) const{
-    return str.find("\"") != string::npos;
-}
-
-bool IWCPP::isOp(std::string str) const{
-    return str == "+" || str == "-" || str == "*" || str == "/" || str == "+." || str == "+-" || str == "++";
-}
-
-int IWCPP::precedence(string op) const{
-    if (op == "+" || op == "-") return 1;
-    if (op == "*" || op == "/") return 2;
-    return 0; // Invalid operator
 }
 
 template<typename T>

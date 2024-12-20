@@ -41,8 +41,12 @@ void IWCPP::parseExp(string &exp){
             it = env.find(var);
             it->second = eval(mem);
         }
-        else /// just returns the binded value elsewise
-            exp = it->second;
+        else{ /// just returns the binded value elsewise
+            if(isNum(it->second)) 
+                exp = it->second;
+            else /// must be returns as a string for identification
+                exp = '\"' + it->second + '\"';
+        }
     }
 
     else if(tmp.substr(0, tmp.find("(") + 1) == "tell(") /// printer function
@@ -93,12 +97,4 @@ void IWCPP::tell(string str){
         outs << innards << '\n';
         outs.close();
     }
-}
-
-bool IWCPP::isVar(string str) const{
-    return !isStr(str) && !isInt(str) && !isFlt(str) && !isOp(str) && !str.empty() && str.find('(') == string::npos;
-}
-
-bool IWCPP::isFunction(string str) const{
-    return true; // TODO
 }
