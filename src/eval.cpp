@@ -93,25 +93,28 @@ float IWCPP::evalFloat(stack<string> statement) const{
 string IWCPP::evalStr(vector<std::string> strs) const{
     string whole;
 
+    if(strs.size() == 1) /// means no concatenation
+        return strs.at(0).substr(1, strs.at(0).length() - 2);
+
     for(size_t i = 0; i < strs.size(); i++){ /// allowing for string concatenation
-        if(strs[i][0] == '"' && strs[i][strs[i].length() - 1] == '"'){
-            whole += strs[i].substr(1, strs[i].length() - 2); /// normal string, remove quotes
+        if(strs.at(i).at(0) == '"' && strs.at(i).at(strs.at(i).length() - 1) == '"'){
+            whole += strs.at(i).substr(1, strs.at(i).length() - 2); /// normal string, remove quotes
         }
-        else if(strs[i] == "+" && i + 1 < strs.size()){ /// operation for string concatenation with no autoformating
+        else if(strs.at(i) == "+" && i + 1 < strs.size()){ /// operation for string concatenation with no autoformating
             i++; // Move to the next string
-            whole += strs[i].substr(1, strs[i].length() - 2);
+            whole += strs.at(i).substr(1, strs.at(i).length() - 2);
         }
-        else if(strs[i] == "+." && i + 1 < strs.size()){ /// dot after concat indicates a space
+        else if(strs.at(i) == "+." && i + 1 < strs.size()){ /// dot after concat indicates a space
             i++;
-            whole += " " + strs[i].substr(1, strs[i].length() - 2);
+            whole += " " + strs.at(i).substr(1, strs.at(i).length() - 2);
         }
-        else if(strs[i] == "++" && i + 1 < strs.size()){  /// double plus indicates newline
+        else if(strs.at(i) == "++" && i + 1 < strs.size()){  /// double plus indicates newline
             i++;
-            whole += "\n" + strs[i].substr(1, strs[i].length() - 2);
+            whole += "\n" + strs.at(i).substr(1, strs.at(i).length() - 2);
         }
-        else if(strs[i] == "+-" && i + 1 < strs.size()){ /// dash indicates tab
+        else if(strs.at(i) == "+-" && i + 1 < strs.size()){ /// dash indicates tab
             i++;
-            whole += "\t" + strs[i].substr(1, strs[i].length() - 2);
+            whole += "\t" + strs.at(i).substr(1, strs.at(i).length() - 2);
         }
         else{ /// error checking!
             cout << RED << "Error: " << RESET << "Invalid string operation or malformed input: " << strs[i] << endl; 

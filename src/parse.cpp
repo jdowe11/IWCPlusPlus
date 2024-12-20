@@ -24,7 +24,7 @@ void IWCPP::parseExp(string &exp){
         auto it = env.find(var);
 
         stream >> tmp;
-        if(it == env.end()){ /// checks for new declared variables
+        if(it == env.end() && tmp != "<" && tmp != "<<"){ /// checks for new declared variables
             string tmpLine;
             getline(stream, tmpLine);
 
@@ -38,8 +38,31 @@ void IWCPP::parseExp(string &exp){
 
             bigStep(tmpLine, mem);
 
-            it = env.find(var);
             it->second = eval(mem);
+        }
+        else if(tmp == "<"){ /// allows for input from terminal
+            stream >> tmp;
+            if(tmp == "con")
+                cin >> tmp;
+            else{
+                ifstream ins(tmp);
+                if(ins.fail()){
+                    cout << RED << "Error: " << RESET << "Input file: " << tmp << " does not exist" << endl;
+                    exit(0);
+                }
+                ins >> tmp;  
+            }
+            env.insert(make_pair(var,tmp));
+        }
+        else if(isOp(tmp)){ /// checks for string operations
+            string tmpLine;
+            getline(stream, tmpLine);
+
+            mem.push_back('\"' + it->second + '\"'); /// adds an old string into the mix
+            mem.push_back(tmp); /// adds the operation
+            bigStep(tmpLine, mem);
+
+            exp = eval(mem);
         }
         else{ /// just returns the binded value elsewise
             if(isNum(it->second)) 
@@ -81,7 +104,7 @@ void IWCPP::tell(string str){
         stringstream sstr(ending);
 
         sstr >> ending;
-        if(ending == "terminal") /// can add terminal, but is not required
+        if(ending == "con") /// can add terminal, but is not required
             index = string::npos;
         else
             outs.open(ending);

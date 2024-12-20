@@ -54,7 +54,7 @@ bool IWCPP::isNum(std::string str) const{
 }
 
 bool IWCPP::isStr(std::string str) const{
-    return str.find("\"") != string::npos;
+    return str.find('"') != string::npos;
 }
 
 bool IWCPP::isOp(std::string str) const{
