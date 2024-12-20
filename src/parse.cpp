@@ -69,17 +69,40 @@ void IWCPP::bigStep(string exp, vector <string> &mem){ /// big step evaluation o
 }
 
 void IWCPP::tell(string str){
-    string innards = str.substr(str.find('(') + 1, str.find(')') - str.find('(') - 1); /// removes the clutter to find just the string inside
-    if(innards[0] != '\"'){ /// if it is not a string, must parse it
+    ofstream outs;
+    string innards, ending;
+    size_t index;
+
+    index = str.find(">");
+    if(index != string::npos){
+        ending = str.substr(index + 1);
+        stringstream sstr(ending);
+
+        sstr >> ending;
+        if(ending == "terminal")
+            index = string::npos;
+        else
+            outs.open(ending);
+    }
+
+    innards = str.substr(str.find('(') + 1, str.find(')') - str.find('(') - 1); /// removes the clutter to find just the string inside
+    if(innards[0] != '\"' && index == string::npos){ /// if it is not a string, must parse it
         parseExp(innards);
         cout << innards << '\n';
+    }
+    else if(innards[0] != '\"' && index != string::npos){
+        parseExp(innards);
+        outs << innards << '\n';
+    }
+    else if(index != string::npos){
+        outs << innards.substr(1, innards.length() - 2) << '\n'; 
     }
     else /// if it is a string to be told, then just output it without quotations
         cout << innards.substr(1, innards.length() - 2) << '\n'; 
 }
 
 bool IWCPP::isVar(string str){
-    return !isNum(str) && !isOp(str) && !str.empty() && str.find('(') == string::npos && str.find(')') == string::npos;
+    return !isInt(str) && !isFlt(str) && !isOp(str) && !str.empty() && str.find('(') == string::npos && str.find(')') == string::npos;
 }
 
 bool IWCPP::isFunction(string str){

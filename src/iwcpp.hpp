@@ -67,12 +67,27 @@ class IWCPP{
          *  @return - the value of the expression
          */
         string eval(vector<string> parsed);
-        /** evalNums - evaluates a set of numbers in an expression
+        /** evalInt - evaluates a set of integers in an expression
          *  @param statement - the stack of numbers and operations
          *  @return - the value
          */
-        double evalNums(stack<string> statement);
-        /** isNum - checks if a string is a number
+        int evalInt(stack<string> statement);
+        /** isInt - checks if a string is an integer
+         *  @param str - the string to be checked
+         *  @return - boolean depending on string
+         */
+        bool isInt(std::string str);
+        /** evalFloat - evaluates a set of floating points numbers in an expression
+         *  @param statement - the stack of numbers and operations
+         *  @return - the value
+         */
+        float evalFloat(stack<string> statement);
+        /** isFlt - checks if a string is a floating point number
+         *  @param str - the string to be checked
+         *  @return - boolean depending on string
+         */
+        bool isFlt(std::string str);
+        /** isNum - checks if a string is a a number
          *  @param str - the string to be checked
          *  @return - boolean depending on string
          */
@@ -87,7 +102,8 @@ class IWCPP{
          *  @param num1 - the first number
          *  @param num2 - the second number
          */
-        double operate(string op, double num1, double num2);
+        template<typename T>
+        T operate(string op, T num1, T num2);
         /** precedence - function to check operator precedence in an equation (CURRENTLY FOLLOW MDAS, no PE)
          *  @param op - the operator
          *  @return - precedence of operator, higher or lowering depending
