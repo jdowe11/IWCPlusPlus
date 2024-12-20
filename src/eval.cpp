@@ -4,25 +4,28 @@
 string IWCPP::eval(vector<string> parsed){
     /// variables
     stack<string> stack;
+    bool numChecker = true;
     bool typeChecker = true;
 
     if(parsed.size() == 0) /// error checking
         cout << RED << "Error: " << RESET << "No data given to a variable" << endl;
 
-    if(isStr(parsed.at(0))) /// checks if a string, returns if so
-        return evalStr(parsed);
-
     /// creates the parsed statement into a usable stack
     for(int i = parsed.size() - 1; i >= 0; i--){
-        if(isFlt(parsed.at(i))) /// checks if the stack has any floats
+        string curr = parsed.at(i);
+        if(!isNum(curr) && !isOp(curr))
+            numChecker = false;
+        if(isFlt(curr)) /// checks if the stack has any floats
             typeChecker = false;
-        stack.push(parsed.at(i));
+        stack.push(curr);
     }
 
-    if(typeChecker)
+    if(typeChecker && numChecker)
         return to_string(evalInt(stack));
-    else
+    else if(!typeChecker && numChecker)
         return to_string(evalFloat(stack));
+    else
+        return evalStr(parsed);
 }
 
 int IWCPP::evalInt(stack<string> statement) const{
@@ -91,35 +94,15 @@ float IWCPP::evalFloat(stack<string> statement) const{
 }
 
 string IWCPP::evalStr(vector<std::string> strs) const{
-    string whole;
+    string whole = string();
 
     if(strs.size() == 1) /// means no concatenation
         return strs.at(0).substr(1, strs.at(0).length() - 2);
 
     for(size_t i = 0; i < strs.size(); i++){ /// allowing for string concatenation
-        if(strs.at(i).at(0) == '"' && strs.at(i).at(strs.at(i).length() - 1) == '"'){
-            whole += strs.at(i).substr(1, strs.at(i).length() - 2); /// normal string, remove quotes
-        }
-        else if(strs.at(i) == "+" && i + 1 < strs.size()){ /// operation for string concatenation with no autoformating
-            i++; // Move to the next string
-            whole += strs.at(i).substr(1, strs.at(i).length() - 2);
-        }
-        else if(strs.at(i) == "+." && i + 1 < strs.size()){ /// dot after concat indicates a space
-            i++;
-            whole += " " + strs.at(i).substr(1, strs.at(i).length() - 2);
-        }
-        else if(strs.at(i) == "++" && i + 1 < strs.size()){  /// double plus indicates newline
-            i++;
-            whole += "\n" + strs.at(i).substr(1, strs.at(i).length() - 2);
-        }
-        else if(strs.at(i) == "+-" && i + 1 < strs.size()){ /// dash indicates tab
-            i++;
-            whole += "\t" + strs.at(i).substr(1, strs.at(i).length() - 2);
-        }
-        else{ /// error checking!
-            cout << RED << "Error: " << RESET << "Invalid string operation or malformed input: " << strs[i] << endl; 
-            exit(0);
-        }
+        string curr = strs.at(i);
+        if(!isOp(curr))
+            whole += curr;
     }
 
     return (whole); /// removes quotes

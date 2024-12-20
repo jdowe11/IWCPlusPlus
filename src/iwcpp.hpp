@@ -40,6 +40,12 @@ class IWCPP{
          *  @param statement - the statement to be parsed
          */
         void parseExp(string &statement);
+        /** addToEnv - adds a variable and its value to the environment
+         *  @param var - the variable that will be binded
+         *  @param exp - the expression that is parsed
+         *  @param mem - the memory that the expression is parsed to
+         */
+        void addToEnv(string var, string exp, vector<string> mem);
         /** bigStep - helper function for the parser, separates all objects and desugars all values
          *  @param exp - the expression that is parsed
          *  @param mem - the memory that the expression is parsed to
@@ -54,11 +60,21 @@ class IWCPP{
          *  @return - boolean depending on string
          */
         bool isVar(string str) const;
+        /** inEnv - checks if a string is in the environment
+         *  @param str - the string to be checked
+         *  @return - boolean depending on string
+         */
+        bool inEnv(string str) const;
         /** isFunction - checks if a string is a valid function
          *  @param str - the string to be checked
          *  @return - boolean depending on string
          */
         bool isFunction(string str) const;
+        /** declutter - removes quotation marks from a string
+         *  @param str - the string to be edited
+         *  @return - reformed string
+         */
+        string declutter(string str);
 
         /// evaluate functions & helper functions
 

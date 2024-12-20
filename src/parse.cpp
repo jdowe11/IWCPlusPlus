@@ -28,17 +28,13 @@ void IWCPP::parseExp(string &exp){
             string tmpLine;
             getline(stream, tmpLine);
 
-            bigStep(tmpLine, mem);
-
-            env.insert(make_pair(var, eval(mem)));
+            addToEnv(var, tmpLine, mem);
         }
         else if(tmp == "="){ /// sets old variables to new value
             string tmpLine;
             getline(stream, tmpLine);
 
-            bigStep(tmpLine, mem);
-
-            it->second = eval(mem);
+            addToEnv(var, tmpLine, mem);
         }
         else if(tmp == "<"){ /// allows for input from terminal
             stream >> tmp;
@@ -54,21 +50,32 @@ void IWCPP::parseExp(string &exp){
             }
             env.insert(make_pair(var,tmp));
         }
+        else if(tmp == "<<"){ /// allows for input from terminal
+            stream >> tmp;
+            if(tmp == "con")
+                getline(cin, tmp);
+            else{
+                ifstream ins(tmp);
+                if(ins.fail()){
+                    cout << RED << "Error: " << RESET << "Input file: " << tmp << " does not exist" << endl;
+                    exit(0);
+                }
+                getline(ins, tmp);  
+            }
+            env.insert(make_pair(var,tmp));
+        }
         else if(isOp(tmp)){ /// checks for string operations
             string tmpLine;
             getline(stream, tmpLine);
 
-            mem.push_back('\"' + it->second + '\"'); /// adds an old string into the mix
+            mem.push_back(it->second); /// adds an old string into the mix
             mem.push_back(tmp); /// adds the operation
             bigStep(tmpLine, mem);
 
             exp = eval(mem);
         }
         else{ /// just returns the binded value elsewise
-            if(isNum(it->second)) 
-                exp = it->second;
-            else /// must be returns as a string for identification
-                exp = '\"' + it->second + '\"';
+            exp = it->second;
         }
     }
 
@@ -77,7 +84,35 @@ void IWCPP::parseExp(string &exp){
 
     else{ /// evaluates the expression in big steps
         bigStep(exp, mem);
+        for(size_t i = 0; i < mem.size() - 1; i++){
+            string str = mem.at(i);
+            if(str.find('"') != string::npos){ /// declutters trings
+                str = declutter(str);
+                mem.at(i) = str;
+            }
+        }
         exp = eval(mem);
+    }
+}
+
+void IWCPP::addToEnv(string var, string exp, vector<string> mem){
+    auto it = env.find(var); /// checks if exists already
+
+    if(exp.find('"') != string::npos){
+        size_t first = exp.find('"');
+        size_t second = exp.find('"', first + 1);
+        exp = exp.substr(first + 1, second - first - 1); /// allows for string concatenation
+        if(it == env.end())
+            env.insert(make_pair(var, exp));
+        else
+            it->second = exp;
+    }
+    else{
+        bigStep(exp, mem);
+        if(it == env.end())
+            env.insert(make_pair(var, eval(mem)));
+        else
+            it->second = exp;
     }
 }
 
@@ -87,7 +122,7 @@ void IWCPP::bigStep(string exp, vector <string> &mem){ /// big step evaluation o
 
     while(line >> tmp){ /// parses it for the memory vector
         if(tmp == "=") line >> tmp; 
-        if(isVar(tmp))
+        if(inEnv(tmp))
             parseExp(tmp);
         mem.push_back(tmp);
     }
