@@ -13,3 +13,6 @@ test.out.dSYM
 
 #ignores .vscode changes
 .vscode
+
+#allow for examples to be passed through
+!examples/*.iwc

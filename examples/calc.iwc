@@ -1,0 +1,21 @@
+statement = "Welcome to the Calculator"
+
+tell(statement)
+
+statement = "Enter your first number"
+
+tell(statement)
+
+num1 < con
+
+statement = "Enter your second number"
+
+tell(statement)
+
+num2 < con
+
+num3 = num1 * num2
+
+statement = "Multiplication of the two numbers: "
+
+tell(statement + num3)

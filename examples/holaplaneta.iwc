@@ -1,0 +1,3 @@
+statement = "Hello World"
+
+tell(statement)
