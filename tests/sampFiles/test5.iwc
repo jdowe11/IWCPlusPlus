@@ -1,0 +1,2 @@
+var << tests/sampFiles/testInput.txt
+tell(var)

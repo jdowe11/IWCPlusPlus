@@ -5,14 +5,21 @@ iwcpp
 #ignore compiled binaries
 *.out
 
-#ignore 
-test.out.dSYM
-
 #ignore .DS_Store files
 .DS_Store
 
 #ignores .vscode changes
 .vscode
 
-#allow for examples to be passed through
+#ignore testing
+**build/
+
+#ignore misc
+test.out.dSYM
+*.txt
+
+#allow for specific files to be passed through
 !examples/*.iwc
+!CMakeLists.txt
+!tests/sampFiles/*iwc
+!tests/sampFiles/*.txt
