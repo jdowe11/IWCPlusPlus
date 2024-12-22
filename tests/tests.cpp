@@ -78,3 +78,19 @@ TEST_CASE("Testing Sample File 5 : Input") {
 
     REQUIRE(capturedOutput.str() == expectedOutput);  // Check if the program ran successfully
 }
+
+TEST_CASE("Testing Sample File 6 : Math") {
+    string expectedOutput = "78.539825\n";
+    stringstream capturedOutput; // Create a stringstream to capture output
+    
+    streambuf* originalCoutBuffer = cout.rdbuf(); // Backup the original std::cout stream
+
+    cout.rdbuf(capturedOutput.rdbuf()); // Redirect std::cout to the stringstream
+
+    IWCPP code("tests/sampFiles/test6.iwc");  // Run the executable with test.iwc
+    code.run();
+
+    cout.rdbuf(originalCoutBuffer); // Restore the original std::cout stream
+
+    REQUIRE(capturedOutput.str() == expectedOutput);  // Check if the program ran successfully
+}
