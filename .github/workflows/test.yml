@@ -1,0 +1,21 @@
+name: CMake Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: ['main']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure CMake
+      run: cmake -S ./tests -B ./tests/build
+    - name: Build
+      run: cmake --build tests/build
+    - name: Test
+      working-directory: build
+      run: ctest
