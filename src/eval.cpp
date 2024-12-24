@@ -1,133 +1,58 @@
-#include "iwcpp.hpp"
+#include "hdrs/lexer.hpp"
+#include "hdrs/parser.hpp"
+#include "hdrs/iwcpp.hpp"
 
-/// primary evaluate functions
-string IWCPP::eval(vector<string> parsed){
-    /// variables
-    stack<string> stack;
-    bool numChecker = true;
-    bool typeChecker = true;
+using namespace std;
 
-    if(parsed.size() == 0) /// error checking
-        cout << RED << "Error: " << RESET << "No data given to a variable" << endl;
+Value IWCPP::evaluate(ASTNode *node) {
+    if (auto num_node = dynamic_cast<NumberNode*>(node))
+        return num_node->value;
 
-    /// creates the parsed statement into a usable stack
-    for(int i = parsed.size() - 1; i >= 0; i--){
-        string curr = parsed.at(i);
-        if(!isNum(curr) && !isOp(curr))
-            numChecker = false;
-        if(isFlt(curr)) /// checks if the stack has any floats
-            typeChecker = false;
-        stack.push(curr);
-    }
+    else if (auto add_node = dynamic_cast<AddNode*>(node))
+        return get<int>(evaluate(add_node->left)) + get<int>(evaluate(add_node->right));
 
-    if(typeChecker && numChecker)
-        return to_string(evalInt(stack));
-    else if(!typeChecker && numChecker)
-        return to_string(evalFloat(stack));
-    else
-        return evalStr(parsed);
-}
+    else if (auto sub_node = dynamic_cast<SubNode*>(node))
+        return get<int>(evaluate(sub_node->left)) - get<int>(evaluate(sub_node->right));
 
-int IWCPP::evalInt(stack<string> statement) const{
-    /// variables for evaluation
-    stack <string> ops;
-    stack <int> nums;
+    else if (auto mult_node = dynamic_cast<MultNode*>(node))
+        return get<int>(evaluate(mult_node->left)) * get<int>(evaluate(mult_node->right));
 
-    while(!statement.empty()){
-        string token = statement.top();
-        statement.pop();
+    else if (auto div_node = dynamic_cast<DivNode*>(node))
+        return get<int>(evaluate(div_node->left)) / get<int>(evaluate(div_node->right));
 
-        if(isNum(token)) /// checks if a num exists
-            nums.push(stoi(token));
-        else{ /// must be an op, then will evaluate
-            while (!ops.empty() && precedence(ops.top()) >= precedence(token)) {
-                float b = nums.top(); nums.pop();
-                float a = nums.top(); nums.pop();
-                string op = ops.top(); ops.pop();
-                nums.push(operate(op, a, b)); // Apply the operator
-            }
-            ops.push(token);
-        }
-    }
-
-    while(!ops.empty()){
-        float b = nums.top(); nums.pop();
-        float a = nums.top(); nums.pop();
-        string op = ops.top(); ops.pop();
-        nums.push(operate(op, a, b)); // Apply the operator
-    }
-
-    return nums.top();
-}
-
-/// type specific evaluate functions
-float IWCPP::evalFloat(stack<string> statement) const{
-    /// variables for evaluation
-    stack <string> ops;
-    stack <float> nums;
-
-    while(!statement.empty()){
-        string token = statement.top();
-        statement.pop();
-
-        if(isNum(token)) /// checks if a num exists
-            nums.push(stod(token));
-        else{ /// must be an op, then will evaluate
-            while (!ops.empty() && precedence(ops.top()) >= precedence(token)) {
-                float b = nums.top(); nums.pop();
-                float a = nums.top(); nums.pop();
-                string op = ops.top(); ops.pop();
-                nums.push(operate(op, a, b)); // Apply the operator
-            }
-            ops.push(token);
-        }
-    }
-
-    while(!ops.empty()){
-        float b = nums.top(); nums.pop();
-        float a = nums.top(); nums.pop();
-        string op = ops.top(); ops.pop();
-        nums.push(operate(op, a, b)); // Apply the operator
-    }
-
-    return nums.top();
-}
-
-string IWCPP::evalStr(vector<std::string> strs) const{
-    string whole = string();
-
-    if(strs.size() == 1) /// means no concatenation
-        return strs.at(0).substr(1, strs.at(0).length() - 2);
-
-    for(size_t i = 0; i < strs.size(); i++){ /// allowing for string concatenation
-        string curr = strs.at(i);
-        if(!isOp(curr))
-            whole += curr;
-    }
-
-    return (whole); /// removes quotes
-}
-
-template<typename T>
-T IWCPP::operate(string op, T num1, T num2) const{
-    if(op == "+")
-        return num1 + num2;
-    else if(op == "-")
-        return num1 - num2;
-    else if(op == "*")
-        return num1 * num2;
-    else if(op == "/"){
-        if(num2 == 0){
-            cout << RED << "Error: " << RESET << "Division by Zero" << endl;
-            exit(0);
-        }
+    else if(auto assign_node = dynamic_cast<AssignNode*>(node)){
+        Value expr_value = evaluate(assign_node->expr);
+        auto it = env.find(assign_node->var_name); /// checks if exists already
+        if(it == env.end())
+            env.insert(make_pair(assign_node->var_name, expr_value));
         else
-            return num1 / num2;
-    }
-    else{
-        cout << RED << "Error: " << RESET << "Invalid Operation" << endl;
-        exit(0);
-    }
-
+            it->second = expr_value;
+        return expr_value;
+    } 
+    else if (auto var_node = dynamic_cast<IdentNode*>(node)) {
+        auto it = env.find(var_node->name);
+        if (it != env.end())
+            return it->second;
+        else
+            throw runtime_error("Variable not found: " + var_node->name);
+    } 
+    else if (auto str_node = dynamic_cast<StringNode*>(node))
+        return str_node->value;
+    else
+        throw runtime_error("Unknown ASTNode");
 }
 
+void IWCPP::execute(ASTNode *node) {
+    if (auto *tell = dynamic_cast<TellNode*>(node)) {
+        // Evaluate the expression in TellNode
+        auto result = evaluate(tell->expr);
+        
+        // If the result is an integer, print it
+        cout << result << endl;
+        
+        // If the result is a string, print it
+        // (evaluate should be modified to handle strings if necessary)
+    }
+    else
+        Value nut = evaluate(node);
+}

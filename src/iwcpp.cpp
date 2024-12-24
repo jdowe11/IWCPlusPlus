@@ -1,4 +1,6 @@
-#include "iwcpp.hpp"
+#include "hdrs/iwcpp.hpp"
+
+using namespace std;
 
 /// functions
 IWCPP::IWCPP(string filepath){
@@ -15,6 +17,36 @@ IWCPP::IWCPP(string filepath){
 
 void IWCPP::run(){
     ifstream filestream;
-    parse(filestream); /// adds filestream to parser
-    filestream.close();
+    string code = string();
+
+    filestream.open(file);
+
+    while(getline(filestream, code)){ 
+        // Tokenize
+        auto tokens = tokenize(code);
+
+        // Parse
+        size_t index = 0;
+        ASTNode* ast = parse(tokens, index);
+
+        // Execute
+        execute(ast);
+
+        // Clean up
+        delete ast;
+    }
+}
+
+/// overloaded operator
+ostream& operator<<(ostream& os, const Value& value) {
+    // Check which type is stored in the variant and print it accordingly
+    if (auto int_value = get_if<int>(&value)) {
+        os << *int_value;  // If it's an int, print it
+    } else if (auto str_value = get_if<string>(&value)) {
+        os << *str_value;  // If it's a string, print it
+    }
+    else {
+        os << "Unknown type";  // If it's an unknown type (shouldn't happen with proper Value types)
+    }
+    return os;
 }

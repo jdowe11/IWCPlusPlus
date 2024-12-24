@@ -1,4 +1,4 @@
-#include "iwcpp.hpp"
+#include "hdrs/iwcpp.hpp"
 
 int main(int argc, char* argv[]){ /// main program, will run the code
     if(argc < 2){
