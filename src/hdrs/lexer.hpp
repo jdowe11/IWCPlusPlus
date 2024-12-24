@@ -5,6 +5,7 @@ enum TokenType {
     TELL,
     INT,
     DBL,
+    BOOL,
     IDENT,
     STR,
     PLUS,

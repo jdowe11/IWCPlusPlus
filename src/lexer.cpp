@@ -7,7 +7,7 @@ using namespace std;
 
 vector<Token> tokenize(const string &code) {
     vector<Token> tokens;
-    regex token_regex(R"(\s*(\d+\.\d+|\d+|tell|\+|\-|\*|\/|\(|\)|[a-zA-Z_]\w*|\"[^\"]*\"|=))");
+    regex token_regex(R"(\s*(\d+\.\d+|\d+|true|false|tell|\+|\-|\*|\/|\(|\)|[a-zA-Z_]\w*|\"[^\"]*\"|=))");
     smatch match;
     string::const_iterator search_start(code.cbegin());
     
@@ -16,6 +16,7 @@ vector<Token> tokenize(const string &code) {
         if (token == "tell") tokens.push_back({TELL, token});
         else if (regex_match(token, regex(R"(\d+\.\d+)"))) tokens.push_back({DBL, token}); // If token is a floating point number
         else if (isdigit(token[0])) tokens.push_back({INT, token});
+        else if (token == "true" || token == "false") tokens.push_back({BOOL, token});  // Handle boolean values
         else if (token == "+") tokens.push_back({PLUS, token});
         else if (token == "-") tokens.push_back({MINUS, token});
         else if (token == "*") tokens.push_back({MULT, token});

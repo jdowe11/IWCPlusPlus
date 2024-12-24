@@ -15,6 +15,12 @@ ASTNode* parsePrimary(const vector<Token> &tokens, size_t &index){
         index++;
         return new DblNode(value);
     }
+    else if(tokens[index].type == BOOL){
+        if(tokens[index].value == "true")
+            return new BoolNode(true);
+        if(tokens[index].value == "false")
+            return new BoolNode(false);
+    }
     else if (tokens[index].type == IDENT) {
         string var_name = tokens[index].value;
         index++;

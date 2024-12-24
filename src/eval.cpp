@@ -12,6 +12,9 @@ Value IWCPP::evaluate(ASTNode *node) {
     if (auto num_node = dynamic_cast<DblNode*>(node))
         return num_node->value;
 
+    if(auto bool_node = dynamic_cast<BoolNode*>(node))
+        return bool_node->value;
+
     /// evaluating each operation
     else if (auto add_node = dynamic_cast<AddNode*>(node))
         return evaluate(add_node->left) + evaluate(add_node->right);

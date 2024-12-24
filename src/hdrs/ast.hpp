@@ -15,6 +15,11 @@ struct DblNode : ASTNode {
     DblNode(double value) : value(value) {}
 };
 
+struct BoolNode : ASTNode {  // New node for boolean literals
+    bool value;
+    BoolNode(bool value) : value(value) {}
+};
+
 struct AddNode : ASTNode {
     ASTNode *left;
     ASTNode *right;
