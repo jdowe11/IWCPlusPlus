@@ -9,7 +9,7 @@
 #include <fstream>
 #include <unordered_map>
 
-using Value = std::variant<int, std::string>;
+using Value = std::variant<int, double, std::string>;
 
 class IWCPP{
     public:
@@ -32,3 +32,11 @@ class IWCPP{
 };
 
 std::ostream& operator<<(std::ostream& os, const Value& value);
+
+Value operator+(const Value& left, const Value& right);
+
+Value operator-(const Value& left, const Value& right);
+
+Value operator*(const Value& left, const Value& right);
+
+Value operator/(const Value& left, const Value& right);

@@ -3,7 +3,8 @@
 
 enum TokenType { 
     TELL,
-    NUM,
+    INT,
+    DBL,
     IDENT,
     STR,
     PLUS,
@@ -22,3 +23,4 @@ struct Token {
 };
 
 std::vector<Token> tokenize(const std::string &code);
+

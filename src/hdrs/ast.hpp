@@ -5,9 +5,14 @@ struct ASTNode {
     virtual ~ASTNode() = default;
 };
 
-struct NumberNode : ASTNode {
+struct IntNode : ASTNode {
     int value;
-    NumberNode(int value) : value(value) {}
+    IntNode(int value) : value(value) {}
+};
+
+struct DblNode : ASTNode {
+    double value;
+    DblNode(double value) : value(value) {}
 };
 
 struct AddNode : ASTNode {

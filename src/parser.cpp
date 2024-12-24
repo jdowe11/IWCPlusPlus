@@ -5,19 +5,27 @@
 using namespace std;
 
 ASTNode* parsePrimary(const vector<Token> &tokens, size_t &index){
-    if (tokens[index].type == NUM) {
+    if (tokens[index].type == INT) {
         int value = stoi(tokens[index].value);
         index++;
-        return new NumberNode(value);
-    } else if (tokens[index].type == IDENT) {
+        return new IntNode(value);
+    } 
+    else if (tokens[index].type == DBL) {
+        double value = stod(tokens[index].value);
+        index++;
+        return new DblNode(value);
+    }
+    else if (tokens[index].type == IDENT) {
         string var_name = tokens[index].value;
         index++;
         return new IdentNode(var_name); // Return a VariableNode for variable reference
-    } else if (tokens[index].type == STR) {
+    }
+    else if (tokens[index].type == STR) {
         string str_value = tokens[index].value.substr(1, tokens[index].value.size() - 2); // Remove quotes
         index++;
         return new StringNode(str_value); // Return a StringNode for string literal
-    } else if (tokens[index].type == LPAREN) {
+    }
+    else if (tokens[index].type == LPAREN) {
         index++;
         ASTNode* expr = parseExpression(tokens, index);
         if (tokens[index].type == RPAREN) {
@@ -61,7 +69,6 @@ ASTNode* parseTerm(const vector<Token> &tokens, size_t &index) {
     return left;
 }
 
-
 ASTNode* parseExpression(const vector<Token> &tokens, size_t &index) {
     ASTNode* left = parseTerm(tokens, index); // Parse the first term (handles * and /)
 
@@ -80,7 +87,6 @@ ASTNode* parseExpression(const vector<Token> &tokens, size_t &index) {
 
     return left;
 }
-
 
 ASTNode* parse(const vector<Token> &tokens, size_t &index) {
     if (index < tokens.size()) {

@@ -1,5 +1,6 @@
-#include "../src/iwcpp.hpp"
+#include "../src/hdrs/iwcpp.hpp"
 #include <catch2/catch_test_macros.hpp>
+#include <sstream>
 
 TEST_CASE("Testing Sample File 1 : Strings") {
     string expectedOutput = "Hello World\n";
@@ -34,7 +35,7 @@ TEST_CASE("Testing Sample File 2 : Ints") {
 }
 
 TEST_CASE("Testing Sample File 3 : Floats") {
-    string expectedOutput = "6.280000\n";
+    string expectedOutput = "6.28\n";
     stringstream capturedOutput; // Create a stringstream to capture output
     
     streambuf* originalCoutBuffer = cout.rdbuf(); // Backup the original std::cout stream

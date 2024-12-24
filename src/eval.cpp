@@ -5,20 +5,25 @@
 using namespace std;
 
 Value IWCPP::evaluate(ASTNode *node) {
-    if (auto num_node = dynamic_cast<NumberNode*>(node))
+    /// INTEGER OPERATIONS
+    if (auto num_node = dynamic_cast<IntNode*>(node))
         return num_node->value;
 
+    if (auto num_node = dynamic_cast<DblNode*>(node))
+        return num_node->value;
+
+    /// evaluating each operation
     else if (auto add_node = dynamic_cast<AddNode*>(node))
-        return get<int>(evaluate(add_node->left)) + get<int>(evaluate(add_node->right));
+        return evaluate(add_node->left) + evaluate(add_node->right);
 
     else if (auto sub_node = dynamic_cast<SubNode*>(node))
-        return get<int>(evaluate(sub_node->left)) - get<int>(evaluate(sub_node->right));
+        return evaluate(sub_node->left) - evaluate(sub_node->right);
 
     else if (auto mult_node = dynamic_cast<MultNode*>(node))
-        return get<int>(evaluate(mult_node->left)) * get<int>(evaluate(mult_node->right));
+        return evaluate(mult_node->left) * evaluate(mult_node->right);
 
     else if (auto div_node = dynamic_cast<DivNode*>(node))
-        return get<int>(evaluate(div_node->left)) / get<int>(evaluate(div_node->right));
+        return evaluate(div_node->left) / evaluate(div_node->right);
 
     else if(auto assign_node = dynamic_cast<AssignNode*>(node)){
         Value expr_value = evaluate(assign_node->expr);
@@ -46,13 +51,9 @@ void IWCPP::execute(ASTNode *node) {
     if (auto *tell = dynamic_cast<TellNode*>(node)) {
         // Evaluate the expression in TellNode
         auto result = evaluate(tell->expr);
-        
         // If the result is an integer, print it
         cout << result << endl;
-        
-        // If the result is a string, print it
-        // (evaluate should be modified to handle strings if necessary)
     }
-    else
-        Value nut = evaluate(node);
+    else /// otherwise just evaluates for now
+        evaluate(node);
 }

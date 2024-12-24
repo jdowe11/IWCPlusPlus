@@ -19,7 +19,7 @@ FetchContent_MakeAvailable(Catch2)
 #
 # Define source files(srcFiles).
 #
-add_library(srcFiles ../src/iwcpp.cpp ../src/parse.cpp ../src/eval.cpp ../src/helpers.cpp)
+add_library(srcFiles ../src/iwcpp.cpp ../src/parser.cpp ../src/eval.cpp ../src/lexer.cpp)
 # See https://stackoverflow.com/questions/41814426/cmake-cant-find-header-files
 target_include_directories(srcFiles PUBLIC ./)
 target_compile_features(srcFiles PUBLIC cxx_std_17)
